@@ -7,10 +7,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ExperienceType {
+  job
+  education
+  course
+}
+
+model User {
+  id           String       @id @default(cuid())
+  name         String
+  email        String       @unique
+  passwordHash String       @map("password_hash")
+  projects     Project[]
+  experiences  Experience[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
 model Project {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  title        String
+  description  String   @db.Text
+  technologies String   @db.Text
+  githubUrl    String?  @map("github_url")
+  demoUrl      String?  @map("demo_url")
+  imageUrl     String?  @map("image_url")
+  userId       String   @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
+}
+
+model Experience {
+  id                   String         @id @default(cuid())
+  title                String
+  companyOrInstitution String         @map("company_or_institution")
+  description          String         @db.Text
+  startDate            DateTime       @map("start_date")
+  endDate              DateTime?      @map("end_date")
+  type                 ExperienceType
+  userId               String         @map("user_id")
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
+
+  @@map("experiences")
 }
