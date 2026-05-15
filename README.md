@@ -31,6 +31,65 @@
 $ npm install
 ```
 
+## Docker
+
+Copie o arquivo de exemplo de variaveis:
+
+```bash
+cp .env.example .env
+```
+
+Suba a API e o MySQL:
+
+```bash
+docker compose up -d --build
+```
+
+A API ficara disponivel em:
+
+```bash
+http://localhost:3000
+```
+
+O MySQL ficara disponivel no host em:
+
+```bash
+localhost:3309
+```
+
+Credenciais padrao do banco:
+
+```bash
+database: portfolio
+user: portfolio_user
+password: portfolio_password
+root password: root_password
+```
+
+Para ver os containers:
+
+```bash
+docker compose ps
+```
+
+Para ver logs da API:
+
+```bash
+docker compose logs -f api
+```
+
+Para parar tudo:
+
+```bash
+docker compose down
+```
+
+Para remover tambem os dados do MySQL:
+
+```bash
+docker compose down -v
+```
+
 ## Compile and run the project
 
 ```bash
