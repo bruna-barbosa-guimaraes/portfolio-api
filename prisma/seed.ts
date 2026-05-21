@@ -1,14 +1,18 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-const adminSeed = {
-  name: process.env.ADMIN_NAME ?? 'Admin',
-  email: process.env.ADMIN_EMAIL ?? 'admin@portfolio.local',
-  passwordHash: process.env.ADMIN_PASSWORD_HASH ?? 'admin-password-hash',
-};
-
 export async function createAdmin(client: PrismaClient = prisma) {
+  const passwordHash =
+    process.env.ADMIN_PASSWORD_HASH ??
+    (await bcrypt.hash(process.env.ADMIN_PASSWORD ?? 'admin123', 10));
+  const adminSeed = {
+    name: process.env.ADMIN_NAME ?? 'Admin',
+    email: process.env.ADMIN_EMAIL ?? 'admin@portfolio.local',
+    passwordHash,
+  };
+
   const admin = await client.user.upsert({
     where: {
       email: adminSeed.email,
